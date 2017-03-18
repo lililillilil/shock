@@ -1,0 +1,19 @@
+{
+  "name": "shock",
+  "version": "0.1.0",
+  "description": "Open Source Device Manager for Multimedia Event",
+  "main": "",
+  "repository": "git@github.com:lililillilil/shock.git",
+  "homepage": "https://github.com/lililillilil/shock",
+  "license": "MIT",
+  "contributors": [
+    "woecifaun <woecifaun@gmail.com>",
+    "tom32i <thomas.jarrand@gmail.com> (http://thomas.jarrand.fr)"
+  ],
+  "scripts": {
+    "app": "electron ./app"
+  },
+  "dependencies": {
+    "electron": "^1.6.2"
+  }
+}
