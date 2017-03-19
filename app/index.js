@@ -1,19 +1,15 @@
-const electron = require('electron')
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
-
-const path = require('path')
-const url = require('url')
-
-const show = require('../test.js');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 function createWindow () {
+  // Launch the show
+  const show = require('../test.js');
+
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
 
@@ -22,7 +18,16 @@ function createWindow () {
     pathname: path.join(`${__dirname}/../src/view`, 'index.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  }));
+
+  // TODO: This will be websockets.
+  ipcMain.on('show:command', (event, commandName) => {
+    try {
+      show.execute(commandName);
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  });
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()

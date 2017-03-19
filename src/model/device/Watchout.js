@@ -1,5 +1,5 @@
 const Device = require('../Device');
-const TCPChannel = require('../network/TCPChannel');
+const TCPChannel = require('../channel/TCPChannel');
 
 /**
  * Watchout

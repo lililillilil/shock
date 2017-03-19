@@ -8,13 +8,14 @@ class TCPChannel extends Channel {
   /**
    * @param {String} host
    * @param {Number} port
-   * @param {Boolean} open
+   * @param {Boolean} autoOpen
    */
-  constructor(host, port, open = true) {
+  constructor(host, port, autoOpen = true) {
     super();
 
     this.host = host;
     this.port = port;
+    this.socket = null;
 
     this.onConnect = this.onConnect.bind(this);
     this.onClose = this.onClose.bind(this);
@@ -23,7 +24,7 @@ class TCPChannel extends Channel {
     this.onError = this.onError.bind(this);
     this.onData = this.onData.bind(this);
 
-    if (open) {
+    if (autoOpen) {
       this.open();
     }
   }

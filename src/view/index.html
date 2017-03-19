@@ -7,35 +7,47 @@
   <body>
     <h1>Show Controller</h1>
     <div id="control-buttons-container">
-      <button id="reset-button"
-        data-trigger="tcp"
-        data-host="192.168.0.100"
-        data-port="3040"
-        data-message="gotoTime 0"
-        style="background-color:orange;"
+      <button
+        type="button"
+        data-command="stop"
+        style="background-color: orange;"
       >
         RESET
       </button>
       <button
-        id="play-button"
-        data-trigger="tcp"
-        data-host="192.168.0.100"
-        data-port="3040"
-        data-message="run"
-        style="background-color:lime;"
+        type="button"
+        data-command="play"
+        style="background-color: lime;"
       >
         PLAY
       </button>
       <button
-        id="pause-button"
-        data-trigger="tcp"
-        data-host="192.168.0.100"
-        data-port="3040"
-        data-message="halt"
-        style="background-color:red;"
+        type="button"
+        data-command="pause"
+        style="background-color: red;"
       >
         PAUSE
       </button>
+      <button
+        type="button"
+        data-command="foo"
+        style="background-color: pink;"
+      >
+        Foo (Unknown command)
+      </button>
     </div>
+    <script type="text/javascript">
+      const { ipcRenderer } = require('electron');
+      const buttons = Array.from(document.querySelectorAll('[data-command]'));
+
+      function onAction(event) {
+        const command = event.currentTarget.getAttribute('data-command');
+
+        // TODO: This will be websockets.
+        ipcRenderer.send('show:command', command);
+      }
+
+      buttons.forEach(element => element.addEventListener('click', onAction));
+    </script>
   </body>
 </html>

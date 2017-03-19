@@ -11,3 +11,9 @@ Open Source Device Manager for Multimedia Event
 Launch the electron app:
 
     yarn app
+
+## Virtual device
+
+Launche a virtual device at port 3040:
+
+    node tests/VirtualDevice.js 3040
