@@ -1,0 +1,51 @@
+---
+make: dataton
+model: Watchout Production Computer
+uid: watchout-display
+channel: tcp
+defaults:
+  host: 3039
+  ending: \r\n
+commands:
+  - name: play
+    description: Trigger a specified timeline to run.
+    message: run
+    arguments:
+      - name: Timeline
+        description: Which auxillary timeline to run. When non specified, main timeline will run.
+        type: string
+        required: false
+        default: ~
+  - name: pause
+    description: Trigger a specified timeline to pause.
+    message: halt
+    arguments:
+      - name: Timeline
+        description: Which auxillary timeline to halt. When non specified, main timeline will halt.
+        type: string
+        required: false
+        default: ~
+  - name: load a show
+    description: Load the show located at the specified path.
+    message: Load
+    arguments:
+      - name: Show's path
+        description: Path to the show to be loaded
+        type: string
+        required: true
+        default: ~
+      - name: Cluster Handling
+        description: Manage cluster loading and feedback.
+        type: bool
+        required: false
+        default: true
+      - name: Master Computer
+        description: Designate as the master display computer.
+        type: bool
+        required: false
+        default: true
+      - name: Conditional Layer
+        description: Conditional layer enable  ags, least signi cant bit is condition 1.
+        type: uint
+        required: false
+        default: 0

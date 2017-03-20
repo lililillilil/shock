@@ -2,14 +2,17 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 
+const confLocation = '/Volumes/Workspace/lililillilil/Software/shock/example';
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 function createWindow () {
   // Launch the show
-  const show = require('../test.js');
+  const show = require('../test.js')(confLocation);
   console.log(show);
+
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
 
