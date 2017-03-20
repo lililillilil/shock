@@ -30,13 +30,6 @@ class TCPChannel extends Channel {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  handle(command) {
-    this.send(command.value);
-  }
-
-  /**
    * Open the connection
    */
   open() {

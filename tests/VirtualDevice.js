@@ -34,7 +34,7 @@ class VirtualDevice {
    * @param {String} message
    */
   send(socket, message) {
-    socket.write(message . '\r\n');
+    socket.write(message + '\r\n');
     socket.pipe(socket);
   }
 

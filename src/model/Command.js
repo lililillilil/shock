@@ -4,13 +4,11 @@
 class Command {
     /**
      * @param {String} name
-     * @param {String} value
-     * @param {Device} device
+     * @param {Function} callback
      */
-    constructor(name, value, device) {
+    constructor(name, callback) {
         this.name = name;
-        this.value = value;
-        this.device = device;
+        this.callback = callback;
 
         this.execute = this.execute.bind(this);
     }
@@ -19,7 +17,7 @@ class Command {
      * Execute the command
      */
     execute() {
-        this.device.channel.handle(this);
+        this.callback();
     }
 }
 

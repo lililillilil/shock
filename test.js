@@ -9,9 +9,9 @@ const watchoutComputer = new Watchout('Watchout computer', 'localhost'/*'192.168
 
 // Commands
 const commands = [
-    new Command('stop', 'gotoTime 0', watchoutComputer),
-    new Command('play', 'run', watchoutComputer),
-    new Command('pause', 'halt', watchoutComputer),
+    new Command('stop', () => watchoutComputer.goTo(0)),
+    new Command('play', watchoutComputer.run),
+    new Command('pause', watchoutComputer.halt),
 ];
 
 module.exports = new Show([watchoutComputer], commands);
