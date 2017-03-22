@@ -1,4 +1,4 @@
-const Command = require('./Command');
+const DeviceSet = require('./DeviceSet');
 
 /**
 * Show
@@ -6,49 +6,35 @@ const Command = require('./Command');
 class Show {
     /**
     * @param {Array} devices
-    * @param {Array} commands
+    * @param {Array} screens
     */
-    constructor(devices, commands = []) {
-        this.devices = devices;
-        this.commands = new Map();
+    constructor(devices = [], screens = []) {
+        this.devices = new DeviceSet(devices);
+        this.screens = screens;
+    }
 
-        this.addCommand = this.addCommand.bind(this);
+    addScreen(screen) {
+        this.screens.push(screen);
+    }
 
-        commands.forEach(this.addCommand);
+    getScreen(name) {
+        return this.screens.find(screen => screen.name.toLowerCase() === name.toLowerCase());
     }
 
     /**
-    * Register a command
-    *
-    * @param {Command} command
-    */
-    addCommand(command) {
-        if (!command instanceof Command) {
-            throw new Error('Must be a Command.');
+     * Execute the given command from the given screen
+     *
+     * @param {String} screenName
+     * @param {String} commandName
+     */
+    execute(screenName, commandName) {
+        const screen = this.getScreen(screenName);
+
+        if (!screen) {
+            throw Error(`No screen found with name "${screenName}".`);
         }
 
-        const { name } = command;
-
-        if (this.commands.has(name)) {
-            throw new Error(`A command with the name "${name}" already exists.`);
-        }
-
-        this.commands.set(name, command);
-    }
-
-    /**
-    * Execute the command with the given name
-    *
-    * @param {String} name
-    */
-    execute(name) {
-        const command = this.commands.get(name);
-
-        if (!command) {
-            throw new Error(`Command "${name}" no found, available: ${Array.from(this.commands.keys()).join(', ')}."`);
-        }
-
-        command.execute();
+        screen.commands.execute(commandName);
     }
 }
 
