@@ -1,5 +1,6 @@
 const glob = require('glob');
 const Driver = require('./Driver');
+const DriverSet = require('./DriverSet');
 
 /**
  * Loader
@@ -10,7 +11,6 @@ class Loader {
      */
     constructor(confLocation) {
         this.driversLocation = confLocation + "/drivers";
-        this.drivers = [];
 
         this.loadDrivers = this.loadDrivers.bind(this);
     }
@@ -19,17 +19,15 @@ class Loader {
      * loadDrivers the Loader
      */
     loadDrivers() {
+        const drivers = new DriverSet();
         console.log('In the driver loader with confLoc : ' + this.driversLocation);
         glob(this.driversLocation + "/*.yml", (er, files) => {
             files.forEach(file => {
-                this.drivers.push(new Driver(file));
-                console.log(this.drivers);
+                drivers.add(new Driver(file));
             })
-          // files is an array of filenames.
-          // If the `nonull` option is set, and nothing
-          // was found, then files is ["**/*.js"]
-          // er is an error object or null.
         })
+
+        return drivers;
     }
 }
 

@@ -1,0 +1,49 @@
+---
+devices:
+  Watchout:
+    host: 192.168.0.100
+    port: 3040
+    driver: watchout-production
+  VP1:
+    host: 192.168.0.101
+    port: 9230
+    driver: optoma-projector
+  VP2:
+    host: 192.168.0.102
+    port: 9230
+    driver: optoma-projector
+  VP3:
+    host: 192.168.0.103
+    port: 9230
+    driver: optoma-projector
+
+actions:
+  - action: Show:play
+    devices:
+      - device: Watchout
+        command: play
+  - action: Show:reset
+    devices:
+      - device: Watchout
+        command: gotoTime 0
+  - action: Show:pause
+    devices:
+      - device: Watchout
+        command: pause
+  - action: Projector:on
+    devices:
+      - device: VP1
+        command: on
+      - device: VP2
+        command: on
+      - device: VP3
+        command: on
+  - action: Projector:off
+    devices:
+      - device: VP1
+        command: off
+      - device: VP2
+        command: off
+      - device: VP3
+        command: off
+

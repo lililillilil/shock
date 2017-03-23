@@ -5,20 +5,14 @@
  */
 class Driver {
     /**
-     * @param {String} uid
-     * @param {Function} callback
+     * @param {String} filePath of the yml
      */
-    constructor(driverLocation) {
-        this.uid = 'uid';
+    constructor(filePath) {
+        this.uid = filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
+        this.filePath = filePath;
 
-        this.execute = this.execute.bind(this);
-    }
-
-    /**
-     * Execute the Driver
-     */
-    execute() {
-        this.callback();
+        // driver is loaded only when needed
+        this.loaded = false;
     }
 }
 
