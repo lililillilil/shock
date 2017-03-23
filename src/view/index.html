@@ -41,7 +41,7 @@
       const buttons = Array.from(document.querySelectorAll('[data-command]'));
 
       function onAction(event) {
-        const command = event.currentTarget.getAttribute('data-command');
+        const command = event.currentTarget.dataset.command;
 
         // TODO: This will be websockets.
         ipcRenderer.send('show:command', command);
