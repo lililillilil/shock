@@ -9,7 +9,7 @@ let mainWindow
 function createWindow () {
   // Launch the show
   const show = require('../test.js');
-
+  console.log(show);
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
 
@@ -21,9 +21,9 @@ function createWindow () {
   }));
 
   // TODO: This will be websockets.
-  ipcMain.on('show:command', (event, commandName) => {
+  ipcMain.on('show:command', (event, command) => {
     try {
-      show.execute(commandName);
+      show.execute(...command.split(':'));
     } catch (error) {
       console.error('Error:', error.message);
     }

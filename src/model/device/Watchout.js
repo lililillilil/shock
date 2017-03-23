@@ -28,17 +28,32 @@ class Watchout extends Device {
     }
 
     /**
-     * Run
+     * Trigger a specified timeline to run.
+     *
+     * @param {String} timeline Which auxillary timeline to halt. When non specified, main timeline will run.
      */
-    run() {
-        this.channel.send('run');
+    run(timeline = '') {
+        this.channel.send(`run ${timeline}`.trim());
     }
 
     /**
-     * Halt
+     * Trigger a specified timeline to pause.
+     *
+     * @param {String} timeline Which auxillary timeline to halt. When non specified, main timeline will halt.
      */
-    halt() {
-        this.channel.send('halt');
+    halt(timeline = '') {
+        this.channel.send(`halt ${timeline}`.trim());
+    }
+
+    /**
+     * Load the show located at the specified path.
+     *
+     * @param {String} path Path to the show to be loaded
+     * @param {Number} layer Conditional layer enable  ags, least signi cant bit is condition 1.
+     * @param {Boolean} online Go online automatically, making the show to be ready to run.
+     */
+    loadShow(path, layer = 0, online = true) {
+        this.channel.send(`load ${path} ${layer} ${online}`);
     }
 }
 
