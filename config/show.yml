@@ -1,0 +1,52 @@
+---
+devices:
+  - name: VP1
+    host: 192.168.0.101
+    port: 9230
+    protocol: optoma-projector
+  - name: Watchout
+    host: 192.168.0.90
+    port: 3040
+    protocol: watchout-producer
+
+irl_events:
+  - name: Running the show
+    uid: "Show:run"
+    commands:
+      - name: run Watchout
+        uid: "watchout:run"
+        devices: [Watchout]
+        method: run
+        args: []
+
+  - name: Pausing the show
+    uid: "Show:pause"
+    commands:
+      - name: pause Watchout
+        uid: "watchout:pause"
+        devices: [Watchout]
+        method: halt
+        args: []
+
+  - name: Restart from beginning
+    uid: "Show:restart"
+    commands:
+      - name: reset timeline to zero
+        uid: "watchout:reset"
+        devices: [Watchout]
+        method: goTo
+        args: ['00:00:00.000']
+      - name: run Watchout
+        uid: "watchout:run"
+        devices: [Watchout]
+        method: run
+        args: []
+
+  - name: Goto Time
+    uid: "Show:moment:climax"
+    commands:
+      - name: pause Watchout to climax
+        uid: "watchout:goto:climax"
+        devices: [Watchout]
+        method: goTo
+        args: ['00:01:03.000']

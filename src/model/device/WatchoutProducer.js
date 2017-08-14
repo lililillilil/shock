@@ -4,27 +4,45 @@ const TCPChannel = require('../channel/TCPChannel');
 /**
  * Watchout
  */
-class Watchout extends Device {
+class WatchoutProducer extends Device {
     /**
      * @param {String} name
      * @param {String} host
-     * @param {String} port
+     * @param {String} port Default to 3040 for Watchout Producer
      */
-    constructor(name, host, port) {
+    constructor(name, host, port = 3040) {
         super(name, new TCPChannel(host, port));
 
+        this.termination = "\r\n";
+
+        this.send = this.send.bind(this);
         this.goTo = this.goTo.bind(this);
         this.run = this.run.bind(this);
         this.halt = this.halt.bind(this);
     }
 
     /**
+     * Send message through TCP connection after formatting it
+     *
+     * @param {String} message The message to be sent before formatting
+     */
+    send(message) {
+        const formatted = message.trim() + this.termination;
+
+        this.channel.send(formatted);
+    }
+
+    /**
      * Go to the given point in time
      *
-     * @param {Number} time
+     * @param {String} time position with following format HH:MM:SS.FFF (FFF is milliseconds)
      */
     goTo(time) {
-        this.channel.send(`gotoTime ${time}`);
+        if (!time) {
+            throw new Error(`Invalid argument for Dataton Watchout gotoTime order.`);
+        }
+
+        this.send(`gotoTime ${time}`);
     }
 
     /**
@@ -33,7 +51,7 @@ class Watchout extends Device {
      * @param {String} timeline Which auxillary timeline to halt. When non specified, main timeline will run.
      */
     run(timeline = '') {
-        this.channel.send(`run ${timeline}`.trim());
+        this.send(`run ${timeline}`);
     }
 
     /**
@@ -42,7 +60,7 @@ class Watchout extends Device {
      * @param {String} timeline Which auxillary timeline to halt. When non specified, main timeline will halt.
      */
     halt(timeline = '') {
-        this.channel.send(`halt ${timeline}`.trim());
+        this.send(`halt ${timeline}`);
     }
 
     /**
@@ -53,8 +71,8 @@ class Watchout extends Device {
      * @param {Boolean} online Go online automatically, making the show to be ready to run.
      */
     loadShow(path, layer = 0, online = true) {
-        this.channel.send(`load ${path} ${layer} ${online}`);
+        this.send(`load ${path} ${layer} ${online}`);
     }
 }
 
-module.exports = Watchout;
+module.exports = WatchoutProducer;

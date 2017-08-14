@@ -59,6 +59,7 @@ class TCPChannel extends Channel {
    * @param {String} message
    */
   send(message) {
+    this.open();
     this.socket.write(message);
   }
 

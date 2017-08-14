@@ -1,5 +1,6 @@
+const path = require('path');
 const Show = require('../model/Show');
-const Screen = require('../model/Screen');
+const IRLEvent = require('../model/IRLEvent');
 const Command = require('../model/Command');
 const { loadYaml, keyAsAttribute } = require('./YamlLoader');
 
@@ -9,9 +10,9 @@ class ShowBuilder {
      *
      * @type {Map}
      */
-    static get devices() {
+    static get availableDevices() {
         return new Map([
-            ['watchout', require('../model/device/Watchout')],
+            ['watchout-producer', require('../model/device/WatchoutProducer')],
             ['optoma-projector', require('../model/device/OptomaProjector')],
         ]);
     }
@@ -20,9 +21,13 @@ class ShowBuilder {
      * Constructor
      */
     constructor() {
+        this.availableDevices;
+        this.IRLEvents;
+
         this.createDevice = this.createDevice.bind(this);
-        this.createScreen = this.createScreen.bind(this);
+        this.createIRLEvent = this.createIRLEvent.bind(this);
         this.createCommand = this.createCommand.bind(this);
+        this.getDevice = this.getDevice.bind(this);
     }
 
     /**
@@ -33,6 +38,7 @@ class ShowBuilder {
      * @return {Show}
      */
     load(path) {
+        console.log(path);
         const data = loadYaml(path);
 
         if (!data) {
@@ -50,15 +56,27 @@ class ShowBuilder {
      * @return {Show}
      */
     create(data) {
-        const { devices, screens } = data;
+        const { devices, irl_events } = data;
 
-        const show = new Show(
-            keyAsAttribute(devices).map(this.createDevice)
-        );
+        // creating list of devices needed in conf file matching those available in the software
+        this.devices = new Map();
+        for (let device in devices) {
+            if (devices.hasOwnProperty(device)) {
+                let objDevice = this.createDevice(devices[device]);
+                this.devices.set(objDevice['name'], objDevice);
+            }
+        }
 
-        keyAsAttribute(screens, 'title').forEach(screen => show.addScreen(this.createScreen(screen, show.devices)));
+        // Building list of IRLEvents
+        const irlEvents = new Map();
+        for (let event in irl_events) {
+            if (irl_events.hasOwnProperty(event)) {
+                let irlEvent = this.createIRLEvent(irl_events[event]);
+                irlEvents.set(irlEvent['uid'], irlEvent);
+            }
+        }
 
-        return show;
+        return new Show(devices, irlEvents);
     }
 
     /**
@@ -69,55 +87,51 @@ class ShowBuilder {
      * @return {Device}
      */
     createDevice(data) {
-        const { name, host, port, driver } = data;
-        const Device = this.getDeviceClass(driver);
+        const { name, host, port, protocol } = data;
 
-        return new Device(name, host, port);
+        if (!ShowBuilder.availableDevices.has(protocol)) {
+            throw new Error(`Unkown device "${protocol}", available: ${Array.from(ShowBuilder.availableDevices.keys()).join(', ')}.`);
+        }
+        const device = ShowBuilder.availableDevices.get(protocol);
+
+        return new device(name, host, port);
     }
 
-    createScreen(data, devices) {
-        const { title, triggers } = data;
+    createIRLEvent(data) {
+        const { name, uid, commands } = data;
 
-        return new Screen(
-            title,
-            keyAsAttribute(triggers).map(trigger => this.createCommand(trigger, devices))
-        );
+        const commandObjects = commands.map(this.createCommand);
+
+        return new IRLEvent(name, uid, commandObjects);
     }
 
-    createCommand(data, deviceSet) {
-        const { name, action } = data;
-        const devices = data.devices.map(deviceSet.get);
-        const callbacks = devices.map(device => this.createCommandCallback(device, action));
+    createCommand(data) {
+        const { name, uid, devices, method, args } = data;
 
-        return new Command(name, () => callbacks.forEach(callback => callback()));
-    }
-
-    createCommandCallback(device, action) {
-        if (typeof action === 'string') {
-            return device[action];
+        const commandDevices = new Map();
+        for (let device in devices) {
+            if (devices.hasOwnProperty(device)) {
+                let objDevice = this.getDevice(devices[device]);
+                commandDevices.set(objDevice['name'], objDevice);
+            }
         }
 
-        const { name, args } = action;
-
-        return () => { return device[name](...args) };
+        return new Command(name, uid, commandDevices, method, args);
     }
 
     /**
-     * Get device class by name
+     * Get the specified device in the conf from available devices of the show
      *
-     * @param {String} name
+     * @param {Object} data
      *
-     * @return {Function}
+     * @return {Device}
      */
-    getDeviceClass(name) {
-        const { devices } = ShowBuilder;
-        const key = name.toLowerCase();
-
-        if (!devices.has(key)) {
-            throw new Error(`Unkown device "${name}", available: ${Array.from(devices.keys()).join(', ')}.`);
+    getDevice(name) {
+        if (!this.devices.has(name)) {
+            throw new Error(`Unkown device "${name}", available: ${Array.from(this.devices.keys()).join(', ')}.`);
         }
 
-        return devices.get(key);
+        return this.devices.get(name);
     }
 }
 

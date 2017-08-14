@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
+const ShowBuilder = require('../src/util/ShowBuilder');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -8,8 +9,8 @@ let mainWindow
 
 function createWindow () {
   // Launch the show
-  const show = require('../test.js');
-  console.log(show);
+  const show = new ShowBuilder().load(path.join(`${__dirname}/../config`, 'show.yml'));
+
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
 
@@ -21,9 +22,9 @@ function createWindow () {
   }));
 
   // TODO: This will be websockets.
-  ipcMain.on('show:command', (event, command) => {
+  ipcMain.on('show:event:trigger', (event, eventUID) => {
     try {
-      show.execute(...command.split(':'));
+      show.trigger(eventUID);
     } catch (error) {
       console.error('Error:', error.message);
     }

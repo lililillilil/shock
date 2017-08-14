@@ -9,14 +9,14 @@
     <div id="control-buttons-container">
       <button
         type="button"
-        data-command="Show:reset"
+        data-command="Show:restart"
         style="background-color: orange;"
       >
-        RESET
+        RESTART
       </button>
       <button
         type="button"
-        data-command="Show:play"
+        data-command="Show:run"
         style="background-color: lime;"
       >
         PLAY
@@ -30,10 +30,10 @@
       </button>
       <button
         type="button"
-        data-command="foo"
+        data-command="Show:moment:climax"
         style="background-color: pink;"
       >
-        Foo (Unknown command)
+        Go To Climax
       </button>
     </div>
     <script type="text/javascript">
@@ -44,7 +44,7 @@
         const command = event.currentTarget.dataset.command;
 
         // TODO: This will be websockets.
-        ipcRenderer.send('show:command', command);
+        ipcRenderer.send('show:event:trigger', command);
       }
 
       buttons.forEach(element => element.addEventListener('click', onAction));

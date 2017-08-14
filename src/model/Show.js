@@ -2,39 +2,37 @@ const DeviceSet = require('./DeviceSet');
 
 /**
 * Show
+*
+* This class is not more than a container for Devices & IRLEvents
 */
 class Show {
     /**
-    * @param {Array} devices
-    * @param {Array} screens
+    * @param {Map} irlEvents
     */
-    constructor(devices = [], screens = []) {
-        this.devices = new DeviceSet(devices);
-        this.screens = screens;
+    constructor(devices, irlEvents) {
+        this.devices = devices;
+        this.irlEvents = irlEvents;
+
+        this.getCommand = this.getCommand.bind(this);
     }
 
-    addScreen(screen) {
-        this.screens.push(screen);
-    }
-
-    getScreen(name) {
-        return this.screens.find(screen => screen.name.toLowerCase() === name.toLowerCase());
+    getCommand(name) {
+        return this.commands.find(commands => commands.name.toLowerCase() === name.toLowerCase());
     }
 
     /**
-     * Execute the given command from the given screen
+     * Trigger the irl event
      *
-     * @param {String} screenName
-     * @param {String} commandName
+     * @param {String} uid for the irl event that is triggered
      */
-    execute(screenName, commandName) {
-        const screen = this.getScreen(screenName);
-
-        if (!screen) {
-            throw Error(`No screen found with name "${screenName}".`);
+    trigger(uid) {
+        if (!this.irlEvents.has(uid)) {
+            throw Error(`No irl event found with uid "${uid}".`);
         }
 
-        screen.commands.execute(commandName);
+        const irlEvent = this.irlEvents.get(uid);
+
+        irlEvent.trigger();
     }
 }
 
