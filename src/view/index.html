@@ -37,18 +37,12 @@
         Go To Climax
       </button>
     </div>
-    <script type="text/javascript">
-      const { ipcRenderer } = require('electron');
-      const buttons = Array.from(document.querySelectorAll('[data-command]'));
-
-      function onAction(event) {
-        const command = event.currentTarget.dataset.command;
-
-        // TODO: This will be websockets.
-        ipcRenderer.send('show:event:trigger', command);
-      }
-
-      buttons.forEach(element => element.addEventListener('click', onAction));
-    </script>
+    <div>
+      <a href="vp.html">VP</a>
+    </div>
+    <section id="status-box">
+      status box
+    </section>
+    <script src="../../renderer-process/index.js"></script>
   </body>
 </html>

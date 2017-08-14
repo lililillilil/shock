@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
-const ShowBuilder = require('../src/util/ShowBuilder');
+const ShowBuilder = require('./src/util/ShowBuilder');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -9,7 +9,7 @@ let mainWindow
 
 function createWindow () {
   // Launch the show
-  const show = new ShowBuilder().load(path.join(`${__dirname}/../config`, 'show.yml'));
+  const show = new ShowBuilder().load(path.join(`${__dirname}/config`, 'show.yml'));
 
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
@@ -17,7 +17,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(`${__dirname}/../src/view`, 'index.html'),
+    pathname: path.join(`${__dirname}/src/view`, 'index.html'),
     protocol: 'file:',
     slashes: true
   }));
@@ -32,7 +32,7 @@ function createWindow () {
   });
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
