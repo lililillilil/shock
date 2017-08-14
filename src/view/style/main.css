@@ -1,0 +1,10 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+button {
+    display: inline-block;
+    border: none;
+    padding: 1em;
+}

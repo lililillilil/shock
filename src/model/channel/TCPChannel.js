@@ -10,7 +10,7 @@ class TCPChannel extends Channel {
    * @param {Number} port
    * @param {Boolean} autoOpen
    */
-  constructor(host, port, autoOpen = true) {
+  constructor(host, port, autoOpen = false) {
     super();
 
     this.host = host;
