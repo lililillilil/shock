@@ -15,9 +15,11 @@ class IRLEvent {
         this.name = name;
         this.uid = uid;
         this.commands = new Map();
+        this.ipcRenderer;
 
         this.addCommand = this.addCommand.bind(this);
         this.trigger = this.trigger.bind(this);
+        this.attachIPCRenderer = this.attachIPCRenderer.bind(this);
 
         commands.forEach(this.addCommand);
     }
@@ -26,7 +28,11 @@ class IRLEvent {
      * Execute the commands in order they are stored in this IRLEvent
      */
     trigger() {
-        this.commands.forEach(command => { command.execute(); });
+        this.ipcRenderer.send('interface:log', '[Event] ' + this.name);
+        this.commands.forEach(command => {
+            this.ipcRenderer.send('interface:log', '[Cmd] ' + command.name);
+            command.execute();
+        });
     }
 
     /**
@@ -46,6 +52,15 @@ class IRLEvent {
         }
 
         this.commands.set(uid, command);
+    }
+
+    /**
+     * Attach the ipcRenderer that triggered the show event
+     *
+     * @param  {[type]} ipcRenderer
+     */
+    attachIPCRenderer(ipcRenderer) {
+        this.ipcRenderer = ipcRenderer;
     }
 }
 

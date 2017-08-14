@@ -8,3 +8,5 @@ function onAction(event) {
 }
 
 buttons.forEach(element => element.addEventListener('click', onAction));
+
+ipcRenderer.on('interface:log', (event, arg) => { console.log(arg); });

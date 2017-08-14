@@ -25,6 +25,7 @@ function createWindow () {
   // TODO: This will be websockets.
   ipcMain.on('show:event:trigger', (event, eventUID) => {
     try {
+      show.attachIPCRenderer(event.sender);
       show.trigger(eventUID);
     } catch (error) {
       console.error('Error:', error.message);

@@ -12,8 +12,10 @@ class Show {
     constructor(devices, irlEvents) {
         this.devices = devices;
         this.irlEvents = irlEvents;
+        this.ipcRenderer;
 
         this.getCommand = this.getCommand.bind(this);
+        this.attachIPCRenderer = this.attachIPCRenderer.bind(this);
     }
 
     getCommand(name) {
@@ -32,7 +34,19 @@ class Show {
 
         const irlEvent = this.irlEvents.get(uid);
 
+        if (this.ipcRenderer) {
+            irlEvent.attachIPCRenderer(this.ipcRenderer);
+        }
         irlEvent.trigger();
+    }
+
+    /**
+     * Attach the ipcRenderer that triggered the show event
+     *
+     * @param  {[type]} ipcRenderer
+     */
+    attachIPCRenderer(ipcRenderer) {
+        this.ipcRenderer = ipcRenderer;
     }
 }
 
