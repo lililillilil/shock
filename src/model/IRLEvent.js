@@ -20,6 +20,7 @@ class IRLEvent {
         this.addCommand = this.addCommand.bind(this);
         this.trigger = this.trigger.bind(this);
         this.attachIPCRenderer = this.attachIPCRenderer.bind(this);
+        this.log = this.log.bind(this);
 
         commands.forEach(this.addCommand);
     }
@@ -28,9 +29,9 @@ class IRLEvent {
      * Execute the commands in order they are stored in this IRLEvent
      */
     trigger() {
-        this.ipcRenderer.send('interface:log', '[Event] ' + this.name);
+        this.log(this.name);
         this.commands.forEach(command => {
-            this.ipcRenderer.send('interface:log', '[Cmd] ' + command.name);
+            this.log(command.name, 'Cmd');
             command.execute();
         });
     }
@@ -61,6 +62,12 @@ class IRLEvent {
      */
     attachIPCRenderer(ipcRenderer) {
         this.ipcRenderer = ipcRenderer;
+    }
+
+    log(message, level = 'Event') {
+        if (this.ipcRenderer) {
+            this.ipcRenderer.send('interface:log', '[' + level + '] ' + message);
+        }
     }
 }
 
