@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "electron": "^1.6.2",
-    "js-yaml": "^3.8.2"
+    "js-yaml": "^3.13.1"
   }
 }
